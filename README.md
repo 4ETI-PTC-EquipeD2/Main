@@ -1,10 +1,12 @@
 # PTC Equipe D2
 ## Membre du groupe
-- Deleule Alix
-- Gorvien Mathis
-- Jolin Alexandre
-- Micheli Sebastien
-- Mu Yuxin
-- Nalewajek Evann
-- Nicolle Audrey
-- Paulet-Duprat Gabriel
+|Membre|Majeure|
+|-|-|
+|Deleule Alix|ROSE|
+|Gorvien Mathis|CLBD|
+|Jolin Alexandre|IMI|
+|Micheli Sebastien|CLBD|
+|Mu Yuxin|ESE|
+|Nalewajek Evann|CLBD|
+|Nicolle Audrey|ESE|
+|Paulet-Duprat Gabriel|CLBD|
