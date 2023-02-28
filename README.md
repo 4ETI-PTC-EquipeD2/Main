@@ -5,4 +5,6 @@
 - Jolin Alexandre
 - Micheli Sebastien
 - Mu Yuxin
-- Nalewajek 
+- Nalewajek Evann
+- Nicolle Audrey
+- Paulet-Duprat Gabriel
