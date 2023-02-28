@@ -15,7 +15,7 @@
 |Paulet-Duprat Gabriel|CLBD|Interface Web|
 </div>
 
-:smiley:
+:hibiscus:
 
 |Séance|Travail à effectuer|Rendu en fin de séance|
 |-|-|-|
