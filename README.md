@@ -26,7 +26,7 @@
 |Séance 5||CR de séance|
 |Séance 6||CR de séance|
 |Séance 7||CR de séance|
-|Séance 8</br>Jalon1 : 20/04|**Rendu en début de séance :**</br>* Préparation au passage de jalon – Retour de la fiche de validation de fonctionnalité</br>* Préparation au passage de jalon – Retour des fiches de bilan individuel</br>*Préparation au passage de jalon – Retour du rapport intermédiaire</br>**Rendez‐vous : Jalon 1**|CR de séance|
+|Séance 8</br>Jalon1 : 20/04|**Rendu en début de séance :**</br>* Préparation au passage de jalon – Retour de la fiche de validation de fonctionnalité</br>* Préparation au passage de jalon – Retour des fiches de bilan individuel</br>* Préparation au passage de jalon – Retour du rapport intermédiaire</br>**Rendez‐vous : Jalon 1**|CR de séance|
 |Séance 9|Rendu en début de séance : Bilan de jalon 1|CR de séance|
 |Séance 10||CR de séance|
 |Séance 11||CR de séance|
