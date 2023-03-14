@@ -70,3 +70,9 @@ void delay_ms(uint32_t ms)
     uint32_t delay = ms * 3360;
     while (delay--) {};
 }
+
+```
+Ce code utilise la librairie STM32Cube pour configurer les ports GPIO et l'ADC. Il commence par configurer la broche du capteur en entrée analogique et l'ADC en mode mono-convertion. Ensuite, il effectue une conversion ADC et récupère la valeur de la conversion pour l'afficher via la console de débogage. Le code boucle ensuite en effectuant une nouvelle conversion ADC toutes les 100ms.
+
+Il est important de noter que ce code est donné à titre d'exemple et qu'il peut nécessiter des ajustements en fonction de votre configuration matérielle spécifique. De plus, la fonction printf utilisée dans cet exemple nécessite une implémentation de la librairie de bas niveau appropriée pour envoyer les messages via la console de débogage.
+```
