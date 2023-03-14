@@ -19,13 +19,13 @@
 
 |Session|Work to do|Return by the end of the session|
 |-|-|-|
-|Session 1||CR de séance|
-|Session 2|Rendez‐vous : Démo mise en œuvre Base Roulante|CR de séance|
-|Session 3|Rendez‐vous : Briefing Gestion logistique|Rapport Pré‐étude</br>CR de séance|
-|Session 4|Rendez‐vous : Equipe – Présentation de votre pré‐étude – Validation de votre projet|CR de séance|
-|Session 5||CR de séance|
-|Session 6||CR de séance|
-|Session 7||CR de séance|
+|Session 1||Session report|
+|Session 2|Meeting : Démo mise en œuvre Base Roulante|Session report|
+|Session 3|Meeting : Briefing Gestion logistique|Rapport Pré‐étude</br>Session report|
+|Session 4|Meeting : Equipe – Présentation de votre pré‐étude – Validation de votre projet|Session report|
+|Session 5||Session report|
+|Session 6||Session report|
+|Session 7||Session report|
 |Session 8</br>Jalon1 : 20/04|**Rendu en début de séance :**</br>* Préparation au passage de jalon – Retour de la fiche de validation de fonctionnalité</br>* Préparation au passage de jalon – Retour des fiches de bilan individuel</br>* Préparation au passage de jalon – Retour du rapport intermédiaire</br>**Rendez‐vous : Jalon 1**|CR de séance|
 |Session 9|Rendu en début de séance : Bilan de jalon 1|CR de séance|
 |Session 10||CR de séance|
