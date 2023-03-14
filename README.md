@@ -5,14 +5,14 @@
   
 |Membre|Majeure|Tâches|
 |-|-|-|
-|Deleule Alix|ROSE|Deplacement MCC|
-|Gorvien Mathis|CLBD|Interface Web|
+|Deleule Alix|ROSE|Deplacement MCC/tire boule|
+|Gorvien Mathis|CLBD|Interface Web design|
 |Jolin Alexandre|IMI|Reconnaissance de QR Code|
 |Micheli Sebastien|CLBD|Capteur Ultrason|
-|Mu Yuxin|ESE||
-|Nalewajek Evann|CLBD|Ultrason|
-|Nicolle Audrey|ESE|Deplacement Odométrie|
-|Paulet-Duprat Gabriel|CLBD|Interface Web|
+|Mu Yuxin|ESE|Deplacement MCC roues encodeuses|
+|Nalewajek Evann|CLBD|Lumière|
+|Nicolle Audrey|ESE|Deplacement Odométrie/ Son|
+|Paulet-Duprat Gabriel|CLBD|Interface Web communication|
 </div>
 
 :hibiscus:
