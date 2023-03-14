@@ -1,0 +1,72 @@
+#include "stm32f4xx.h"
+#include <stdio.h>
+
+// Configuration des broches
+#define SENSOR_PORT GPIOA
+#define SENSOR_PIN GPIO_PIN_0
+
+// Variables globales
+uint32_t sensorValue = 0;
+
+// Prototypes de fonctions
+void GPIO_Config(void);
+void ADC_Config(void);
+void delay_ms(uint32_t ms);
+
+int main(void)
+{
+    GPIO_Config();
+    ADC_Config();
+
+    while (1)
+    {
+        // Lance la conversion ADC
+        ADC1->CR2 |= ADC_CR2_SWSTART;
+
+        // Attend la fin de la conversion
+        while ((ADC1->SR & ADC_SR_EOC) == 0);
+
+        // Récupère la valeur de la conversion
+        sensorValue = ADC1->DR;
+
+        printf("Luminosite : %d\n", sensorValue);
+
+        delay_ms(100);
+    }
+}
+
+void GPIO_Config(void)
+{
+    // Activation de l'horloge pour le port A
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+    // Configuration de la broche du capteur en entrée analogique
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = SENSOR_PIN;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(SENSOR_PORT, &GPIO_InitStruct);
+}
+
+void ADC_Config(void)
+{
+    // Activation de l'horloge pour l'ADC1
+    RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
+
+    // Configuration de l'ADC1 en mode mono-convertion et avec un cycle de conversion de 84 cycles
+    ADC1->CR1 = 0;
+    ADC1->CR2 = 0;
+    ADC1->SQR1 = 0;
+    ADC1->SQR2 = 0;
+    ADC1->SQR3 = 0;
+    ADC1->SMPR2 = ADC_SMPR2_SMP0_1 | ADC_SMPR2_SMP0_0;
+
+    // Activation de l'ADC1
+    ADC1->CR2 |= ADC_CR2_ADON;
+}
+
+void delay_ms(uint32_t ms)
+{
+    uint32_t delay = ms * 3360;
+    while (delay--) {};
+}
