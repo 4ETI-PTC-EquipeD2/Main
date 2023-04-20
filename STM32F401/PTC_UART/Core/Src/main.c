@@ -137,6 +137,7 @@ int main(void)
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
   char message [20] = "UART initialized\n";
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
   HAL_UART_Transmit(&huart1, CLEAR_CONSOLE, strlen(CLEAR_CONSOLE), HAL_MAX_DELAY);
   HAL_UART_Transmit(&huart1, (unsigned char*)message, strlen(message), HAL_MAX_DELAY);
 
