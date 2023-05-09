@@ -6,7 +6,8 @@ from matplotlib import pyplot as plt
 # init camera
 execution_path = os.getcwd()
 camera = cv2.VideoCapture(0)
-
+compteur = 0
+rendu = 0
 while True:
     # Init and FPS process
     start_time = time.time()
@@ -26,11 +27,19 @@ while True:
     print(Test)
     if Test[0]==True:
         print("Entrée if")
-        Qr = cv2.QRCodeDetector().detectAndDecodeCurved(frame)
-        print(Qr)
-
-
-        break
+        Poke,Qr,b = cv2.QRCodeDetector().detectAndDecode(frame) 
+        if Qr is not None:
+            print("Le Qr code renvoie : ", Poke)
+            compteur = 0
+            if Poke is not None:
+                rendu = Poke
+            
+    if compteur > 10:
+        compteur = 0
+        rendu = 0
+    else:
+        compteur += 1
+    print("Le rendu est : ", rendu, "le compteur est : " , compteur)
 
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord('q'):

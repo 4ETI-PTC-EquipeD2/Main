@@ -3,6 +3,7 @@ Auteurs : Audrey Nicolle, ...
 Ce fichier contient toutes les fonctions utilisées par le fichier main pour la boucle d'action
 du robot.
 """
+import Pathfinding as Path
 
 #Fonctions UART ---------------------------------------------------------------------------------------------------------------------
 
@@ -72,6 +73,7 @@ def avancer_case(terrain) :
     # 0 => non visiter, 1 => obstacle, 2 => robot, 3 => libre
 terrain = np.array([0000],[0000],[0000],[0000],[0000],[2000])
     """
+    Path.main(terrain)
     
     
     
