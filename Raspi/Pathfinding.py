@@ -1,10 +1,8 @@
-import numpy as np
 # 0 => non visiter, 1 => obstacle, 2 => robot, 3 => libre, 4 visit
 #Pour tester :  0 => libre, 1 => obstacle, 2 => robot, 4 visit
-Prio = ["u","r","d","l"] #up == on est monté 
+#Prio = ["u","r","d","l"] #up == on est monté 
 #i ligne
-Pile=[]
-Flag = False
+"""
 terrain =          [[1,1,1,1,1,1],
                    [1,0,0,1,0,1],
                    [1,0,0,1,0,1],
@@ -12,7 +10,7 @@ terrain =          [[1,1,1,1,1,1],
                    [1,0,0,0,0,1],
                    [1,0,0,0,0,1],
                    [1,2,0,0,0,1],
-                   [1,1,1,1,1,1]]
+                   [1,1,1,1,1,1]]"""
 
 
 def find(terrain,id):
@@ -22,7 +20,9 @@ def find(terrain,id):
                 return i,j
     return -1,-1
 
-def main(terrain,Flag,Pile):
+def main(terrain):
+    Pile=[]
+    Flag = False
     x,y=find(terrain,2)
     if x==-1:
         print("Ya pas de robot")
@@ -55,11 +55,11 @@ def main(terrain,Flag,Pile):
                     Flag=True
         else:
             print("Passage March arr")
-            marche_arr_mode(terrain)
+            marche_arr_mode(terrain,Pile)
             print("Sortie March arr")
             Flag=False
 
-def marche_arr_mode(terrain):
+def marche_arr_mode(terrain,Pile):
     Flag=True
     while(Flag==True):
         i,j=find(terrain,2)
@@ -110,7 +110,7 @@ def affichage(terrain):
         print(terrain[i])
     print("\n\n")
     
-main(terrain, Flag, Pile)
+#main(terrain)
 
 #Bonne chance
 

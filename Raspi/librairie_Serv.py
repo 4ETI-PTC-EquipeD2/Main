@@ -7,7 +7,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 
 # Note: The path to the JSON file is different on your computer
-cred = credentials.Certificate("/Users/mathisgorvien/Desktop/projet-pokemon-9145b-firebase-adminsdk-pyblk-c58d839000.json")
+cred = credentials.Certificate("C:/Users/orani/OneDrive/Bureau/Key.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://projet-pokemon-9145b-default-rtdb.europe-west1.firebasedatabase.app/'
