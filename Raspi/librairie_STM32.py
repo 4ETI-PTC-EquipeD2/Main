@@ -68,7 +68,12 @@ def avancer_case(terrain) :
         Trouver un moyen d'organiser le déplacement
     Args:
         terrain (_type_): _description_
+        
+    # 0 => non visiter, 1 => obstacle, 2 => robot, 3 => libre
+terrain = np.array([0000],[0000],[0000],[0000],[0000],[2000])
     """
+    
+    
     
 #Fonction attaque -------------------------------------------------------------------------
 
