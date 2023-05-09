@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+#include "autonomie.h"
 
 //#include "../UART_comm/handleCmd.h"
 /* USER CODE END Includes */
@@ -49,6 +50,7 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 unsigned char received, serializerResp[100];
+unsigned char * commande, commande_1,commande_2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -68,36 +70,39 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 	if (huart == &huart1){ // commande recue de la PI
 		HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
-		HAL_UART_Transmit(&huart1, '\n', 1,HAL_MAX_DELAY);
+		HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
 		if (received == 'z'){
-			HAL_UART_Transmit(&huart6, "mogo 1:10 2:10\r",15,HAL_MAX_DELAY);
+			commande = forward_back(50,'-','-');
+			HAL_UART_Transmit(&huart6,commande,strlen((char*)commande),HAL_MAX_DELAY);
 		}
 		else if (received == 'a'){
-			HAL_UART_Transmit(&huart6, "mogo 1:0 2:0\r",13,HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart6, (unsigned char *)"stop\r",5,HAL_MAX_DELAY);
 		}
 		else if (received == 'q'){
-			HAL_UART_Transmit(&huart6, "mogo 1:10 2:0\r",14,HAL_MAX_DELAY);
+			commande = turn_forward(-1);
+			commande_1 = *select_commande(1, commande);
+			commande_2 = *select_commande(1, commande);
+			HAL_UART_Transmit(&huart6,commande_1,strlen((char*)commande_1),HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart6,commande_2,strlen((char*)commande_2),HAL_MAX_DELAY);
 		}
 		else if (received == 'd'){
-			HAL_UART_Transmit(&huart6, "mogo 1:0 2:10\r",14,HAL_MAX_DELAY);
+			commande = turn_forward(1);
+			commande_1 = *select_commande(1, commande);
+			commande_2 = *select_commande(1, commande);
+			HAL_UART_Transmit(&huart6,&commande_1,strlen((char*)commande_1),HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart6,&commande_2,strlen((char*)commande_2),HAL_MAX_DELAY);
 		}
 		else if (received == 's'){
-			HAL_UART_Transmit(&huart6, "mogo 1:-10 2:-10\r",17,HAL_MAX_DELAY);
+			commande = forward_back(50,' ',' ');
+			HAL_UART_Transmit(&huart6,commande,strlen((char*)commande),HAL_MAX_DELAY);
 		}
 	}
 	else if(huart == &huart6){ // commande recue du Serializer
 		if (received != '>'){
 			HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
-			strcat(serializerResp, received);
-			/*
-		HAL_UART_Transmit(&huart1,&received, 1,HAL_MAX_DELAY);
-			 */
 		}
 		else{
-			//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-			HAL_UART_Transmit(&huart1, &serializerResp, strlen(serializerResp),HAL_MAX_DELAY);
-			HAL_UART_Transmit(&huart1, '\n', 1,HAL_MAX_DELAY);
-			serializerResp[0] = '\0';
+			HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
 		}
 	}
     HAL_UART_Receive_IT(huart, &received, 1);
