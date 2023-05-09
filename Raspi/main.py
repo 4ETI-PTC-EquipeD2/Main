@@ -9,6 +9,7 @@ import librairie_Serv as lSV
 #Variables -------------------------------------------------
 #Description matrice du terrain 
 # 0 => non visiter, 1 => obstacle, 2 => robot, 3 => libre
+#0,0 en coo en haut à gauche. x de gauche à droite, y de haut en bas, coo formt x,y
 terrain =         [[1,1,1,1,1,1],
                    [1,0,0,1,0,1],
                    [1,0,0,1,0,1],
