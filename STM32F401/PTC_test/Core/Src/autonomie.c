@@ -11,60 +11,47 @@
 #include <assert.h>
 
 //Fonctions --------------------------------------------------------------------------------------
-unsigned char * forward_back (float l,char wheel_1,char wheel_2){
+void forward_back (float l,char wheel_1,char wheel_2,char * commande){
 	if (l <= 50) {
-		int tick_value = (int)(l*690)/20;
-		char *return_value =  NULL;
-		free(return_value);
-		return_value = (char *) malloc( 24 * sizeof(char));
-		sprintf(return_value,"digo 1:%i:%c10 2:%i:%c10\r",tick_value,wheel_1,tick_value,wheel_2);
-		return return_value;
-	}
-	else {
-		return ((unsigned char*)"none");
+		int tick_value = (int)(l*700*1.15)/20;
+		sprintf(commande,"digo 1:%c%i:%c10 2:%c%i:10\r",wheel_1,tick_value,wheel_2,tick_value);
 	}
 }
 
-unsigned char * cat_value(unsigned char* first_value, unsigned char* second_value){
-	char *return_value =  NULL;
-	free(return_value);
-	return_value = (char *) malloc( 24 * sizeof(char));
-	sprintf(return_value,"%s/%s",first_value,second_value);
-	return (unsigned char *)return_value;
-}
-
-unsigned char * turn_forward (int angle){
-	float r = 12.25;
+void turn_forward (int angle, char * commande){
+	float r = 13.5;
 	float distance = (M_PI*r)/2;
 	if (angle < 0){ //tourner à gauche
-		unsigned char * first_value = forward_back(distance,' ','-');
-		unsigned char * second_value = forward_back(50.0,'-','-');
-		return cat_value(first_value,second_value);
+		char first_value[60];
+		forward_back(distance,' ','-', first_value);
+		char second_value [60];
+		forward_back(50.0,'-','-', second_value);
+		sprintf(commande,"%s/%s",first_value,second_value);
 	}
 	else if (angle > 0) {//tourner à droite
-		unsigned char * first_value = forward_back(distance,'-',' ');
-		unsigned char * second_value = forward_back(50.0,'-','-');
-		return cat_value(first_value,second_value);
+		char first_value [60];
+		forward_back(distance,'-',' ', first_value);
+		char second_value [60];
+		forward_back(50.0,'-','-', second_value);
+		sprintf(commande,"%s/%s",first_value,second_value);
 	}
 	else {//demi-tour
-		unsigned char * first_value = forward_back(4*distance,'-',' ');
-		unsigned char * second_value = forward_back(50.0,'-','-');
-		return cat_value(first_value,second_value);
+		char first_value[60];
+		forward_back(4*distance,'-',' ', first_value);
+		char second_value [60];
+		forward_back(50.0,'-','-', second_value);
+		sprintf(commande,"%s/%s",first_value,second_value);
 	}
 }
 
-unsigned char * select_commande (int n_com, unsigned char * commande){
+void select_commande (int n_com, char * commande,char * commande_i){
 	int car;
 	for(car = 0; car < strlen((char*)commande)-1; car ++){
 		if ((char)commande[car] == '/'){
 			if (n_com == 1){
-				char * commande_1 = "";
-				strncpy(commande_1,(char*)commande, car);
-				return (unsigned char*)commande_1;
+				strncpy(commande_i,commande, car);
 			}else{
-				char * commande_2 = "";
-				strncpy(commande_2,(char*)commande+car, strlen((char*)commande)-1-car);
-				return (unsigned char*)commande_2;
+				strncpy(commande_i,commande+car+1, strlen(commande)-car);
 			}
 		}
 	}
