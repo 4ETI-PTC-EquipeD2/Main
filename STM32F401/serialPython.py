@@ -1,5 +1,6 @@
 # pip instpiall pyserial
 from serial import Serial
+import keyboard
 
 ser = Serial()
 ser.baudrate = 19200 # standard Baudrate for STM32F4 devices
@@ -10,6 +11,7 @@ ser.stopbits=1
 ser.timeout=None
 ser.xonxoff=0
 ser.rtscts=0
+ser.timeout=1
 
 # x = ser.read()          # read one byte
 # s = ser.read(10)        # read up to 10 bytes (timeout)
