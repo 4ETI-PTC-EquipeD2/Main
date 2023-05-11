@@ -4,6 +4,7 @@
 #i ligne
 
 import time as t
+import map_movement as m
 
 terrain =          [[1,1,1,1,1,1],
                    [1,0,0,1,0,1],
@@ -13,6 +14,8 @@ terrain =          [[1,1,1,1,1,1],
                    [1,0,0,0,0,1],
                    [1,2,0,0,0,1],
                    [1,1,1,1,1,1]]
+gameId="test"
+
 """
 
 x=0
@@ -110,22 +113,22 @@ def execute_move(terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'appel
     if dirr=="d":
         terrain[i][j]=4
         terrain[i+1][j]=2
-        #send_move([j-1,i])
+        m.send_movement(2,gameId)
         #Move down
     elif dirr=="l":
         terrain[i][j]=4
         terrain[i][j-1]=2
-        #send_move([j-2,i-1])
+        m.send_movement(3,gameId)
         #Move left
     elif dirr=="u":
         terrain[i][j]=4
         terrain[i-1][j]=2
-        #send_move([j-1,i-2])
+        m.send_movement(1,gameId)
         #Move up
     elif dirr=="r":
         terrain[i][j]=4
         terrain[i][j+1]=2
-        #send_move([j,i-1])
+        m.send_movement(4,gameId)
         #Move right
     affichage(terrain)
     t.sleep(1)
@@ -135,9 +138,40 @@ def affichage(terrain):
         print(terrain[i])
     print("\n\n")
 
-print(find_all_interieur(terrain,1))
-    
-main(terrain)
+def find_obstacle(terrain, commande, distance):
+    i,j = find(terrain, 2)
+    if commande=='0':  #0°
+        if distance<50:
+            terrain[i][j-1]=1
+        elif distance<100:
+            terrain[i][j-2]=1
+        elif distance<150:
+            terrain[i][j-3]=1
+    elif commande=='1':  #90°
+        if distance<50:
+            terrain[i-1][j]=1
+        elif distance<100:
+            terrain[i-2][j]=1
+        elif distance<150:
+            terrain[i-3][j]=1
+        elif distance<200:
+            terrain[i-4][j]=1
+        elif distance<250:
+            terrain[i-5][j]=1
+    elif commande=='2':  #180°
+        if distance<50:
+            terrain[i][j+1]=1
+        elif distance<100:
+            terrain[i][j+2]=1
+        elif distance<150:
+            terrain[i][j+2]=1
+    return terrain
+
+if __name__ == "__main__":
+    listObstacles=find_all_interieur(terrain,1)
+    for i in listObstacles:
+        m.send_obstacle(i,gameId)
+    main(terrain)
 
 #Bonne chance
 
