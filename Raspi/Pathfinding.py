@@ -2,7 +2,9 @@
 #Pour tester :  0 => libre, 1 => obstacle, 2 => robot, 4 visit
 #Prio = ["u","r","d","l"] #up == on est monté 
 #i ligne
-"""
+
+import time as t
+
 terrain =          [[1,1,1,1,1,1],
                    [1,0,0,1,0,1],
                    [1,0,0,1,0,1],
@@ -10,7 +12,15 @@ terrain =          [[1,1,1,1,1,1],
                    [1,0,0,0,0,1],
                    [1,0,0,0,0,1],
                    [1,2,0,0,0,1],
-                   [1,1,1,1,1,1]]"""
+                   [1,1,1,1,1,1]]
+"""
+
+x=0
+y=0
+Dico={}
+Dico[(x,y)]=0
+print(Dico)
+"""
 
 
 def find(terrain,id):
@@ -20,7 +30,16 @@ def find(terrain,id):
                 return i,j
     return -1,-1
 
+def find_all_interieur(terrain,id):
+    listId=[]
+    for i in range(1,7):
+        for j in range(1,5):
+            if (terrain[i][j]==id):
+                listId.append([j-1,i-1])
+    return listId
+
 def main(terrain):
+    affichage(terrain)
     Pile=[]
     Flag = False
     x,y=find(terrain,2)
@@ -29,8 +48,8 @@ def main(terrain):
         return False
     run=True
     while run==True:
-        affichage(terrain)
-        print(Pile)
+        
+        #print(Pile)
         if Flag==False:
             i,j=find(terrain,2)
             #cas=terrain[y]
@@ -54,16 +73,16 @@ def main(terrain):
                 else:
                     Flag=True
         else:
-            print("Passage March arr")
+            #print("Passage March arr")
             marche_arr_mode(terrain,Pile)
-            print("Sortie March arr")
+            #print("Sortie March arr")
             Flag=False
 
 def marche_arr_mode(terrain,Pile):
     Flag=True
     while(Flag==True):
         i,j=find(terrain,2)
-        affichage(terrain)
+        
         move = Pile.pop()
         if(move=="d"):
             execute_move(terrain,"u")
@@ -86,31 +105,39 @@ def marche_arr_mode(terrain,Pile):
             #Execute move direction : up if move = down etc...
         #TODO
 
-def execute_move(terrain,dirr):
+def execute_move(terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'appel d'une fonction qui prend le terrain, le converti en dic[(x,y)]
     i,j=find(terrain,2)
     if dirr=="d":
         terrain[i][j]=4
         terrain[i+1][j]=2
+        #send_move([j-1,i])
         #Move down
     elif dirr=="l":
         terrain[i][j]=4
         terrain[i][j-1]=2
+        #send_move([j-2,i-1])
         #Move left
     elif dirr=="u":
         terrain[i][j]=4
         terrain[i-1][j]=2
+        #send_move([j-1,i-2])
         #Move up
     elif dirr=="r":
         terrain[i][j]=4
         terrain[i][j+1]=2
+        #send_move([j,i-1])
         #Move right
+    affichage(terrain)
+    t.sleep(1)
 
 def affichage(terrain):
     for i in range(len(terrain)):
         print(terrain[i])
     print("\n\n")
+
+print(find_all_interieur(terrain,1))
     
-#main(terrain)
+main(terrain)
 
 #Bonne chance
 
