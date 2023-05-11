@@ -1,0 +1,4 @@
+../Core/Src/autonomie.c:14:17:forward_back	32	static
+../Core/Src/autonomie.c:28:17:cat_value	24	static
+../Core/Src/autonomie.c:36:17:turn_forward	48	static
+../Core/Src/autonomie.c:56:17:select_commande	40	static

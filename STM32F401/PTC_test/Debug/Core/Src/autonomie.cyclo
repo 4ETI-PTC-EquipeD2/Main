@@ -1,0 +1,4 @@
+autonomie.c:14:17:forward_back	2
+autonomie.c:28:17:cat_value	1
+autonomie.c:36:17:turn_forward	3
+autonomie.c:56:17:select_commande	4
