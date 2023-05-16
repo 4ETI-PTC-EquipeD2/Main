@@ -5,7 +5,8 @@
 
 import time as t
 import map_movement as m
-
+gameId="test"
+"""
 terrain =          [[1,1,1,1,1,1],
                    [1,0,0,1,0,1],
                    [1,0,0,1,0,1],
@@ -14,9 +15,8 @@ terrain =          [[1,1,1,1,1,1],
                    [1,0,0,0,0,1],
                    [1,2,0,0,0,1],
                    [1,1,1,1,1,1]]
-gameId="test"
 
-"""
+
 
 x=0
 y=0
@@ -33,6 +33,22 @@ def find(terrain,id):
                 return i,j
     return -1,-1
 
+def obstacle_voisin(terrain):
+    #Renvoie une lettre désignant la direction() et n si il n'y a pas d'obstacle
+    i,j=find(terrain,2)
+    if (terrain[i+1][j]==1):
+         return "d"
+    elif (terrain[i-1][j]==1):
+         return "u"
+    elif (terrain[i][j+1]==1):
+         return "r"
+    elif (terrain[i][j-1]==1):
+         return "l"
+    else:
+        return "n"
+
+
+
 def find_all_interieur(terrain,id):
     listId=[]
     for i in range(1,7):
@@ -41,72 +57,66 @@ def find_all_interieur(terrain,id):
                 listId.append([j-1,i-1])
     return listId
 
-def main(terrain):
-    affichage(terrain)
-    Pile=[]
-    Flag = False
+def main(terrain,run,Flag,Pile):
     x,y=find(terrain,2)
     if x==-1:
         print("Ya pas de robot")
-        return False
-    run=True
-    while run==True:
-        
-        #print(Pile)
-        if Flag==False:
-            i,j=find(terrain,2)
-            #cas=terrain[y]
-            if terrain[i-1][j]==0: #Repasse à 3 le test
-                execute_move(terrain,"u")
-                Pile.append("u")
-            elif terrain[i][j+1]==0: #Repasse à 3 le test
-                execute_move(terrain,"r")
-                Pile.append("r")
-            elif terrain[i+1][j]==0: #Repasse à 3 le test
-                
-                execute_move(terrain,"d")
-                Pile.append("d")
-            elif terrain[i][j-1]==0: #Repasse à 3 le test
-                execute_move(terrain,"l")
-                Pile.append("l")
-            else:
-                i,j=find(terrain,0)
-                if i==-1:
-                    run=False
-                else:
-                    Flag=True
-        else:
-            #print("Passage March arr")
-            marche_arr_mode(terrain,Pile)
-            #print("Sortie March arr")
-            Flag=False
+        return terrain,run,Flag,Pile
 
-def marche_arr_mode(terrain,Pile):
-    Flag=True
-    while(Flag==True):
+    
+    #print(Pile)
+    if Flag==False:
         i,j=find(terrain,2)
-        
-        move = Pile.pop()
-        if(move=="d"):
+        #cas=terrain[y]
+        if terrain[i-1][j]==0: #Repasse à 3 le test
             execute_move(terrain,"u")
-        elif(move=="l"):
+            Pile.append("u")
+        elif terrain[i][j+1]==0: #Repasse à 3 le test
             execute_move(terrain,"r")
-        elif(move=="u"):
-            execute_move(terrain,"d")
-        elif(move=="r"):
-            execute_move(terrain,"l")
+            Pile.append("r")
+        elif terrain[i+1][j]==0: #Repasse à 3 le test
             
-        if (Pile[-1]=="d") and (terrain[i][j-1]!=1 or terrain[i][j+1]!=1 ):
-            Flag=False
-        elif (Pile[-1]=="l") and (terrain[i-1][j]!=1 or terrain[i+1][j]!=1 ):
-            Flag=False
-        elif (Pile[-1]=="u") and (terrain[i][j-1]!=1 or terrain[i][j+1]!=1 ):
-            Flag=False
-        elif (Pile[-1]=="r") and (terrain[i-1][j]!=1 or terrain[i+1][j]!=1 ):
-            Flag=False
+            execute_move(terrain,"d")
+            Pile.append("d")
+        elif terrain[i][j-1]==0: #Repasse à 3 le test
+            execute_move(terrain,"l")
+            Pile.append("l")
+        else:
+            i,j=find(terrain,0)
+            if i==-1:
+                run=False     
+            else:
+                Flag=True
+    else:
+        #print("Passage March arr")
+        terrain,Flag,Pile = marche_arr_mode(terrain,Pile,Flag)
         
-            #Execute move direction : up if move = down etc...
-        #TODO
+        #print("Sortie March arr")
+    return run,terrain,Flag,Pile
+
+def marche_arr_mode(terrain,Pile,Flag):
+    i,j=find(terrain,2)
+    
+    move = Pile.pop()
+    if(move=="d"):
+        execute_move(terrain,"u")
+    elif(move=="l"):
+        execute_move(terrain,"r")
+    elif(move=="u"):
+        execute_move(terrain,"d")
+    elif(move=="r"):
+        execute_move(terrain,"l")
+        
+    if (Pile[-1]=="d") and (terrain[i][j-1]!=1 or terrain[i][j+1]!=1 or terrain[i][j-1]!=5 or terrain[i][j+1]!=5):
+        Flag=False
+    elif (Pile[-1]=="l") and (terrain[i-1][j]!=1 or terrain[i+1][j]!=1 or terrain[i-1][j]!=5 or terrain[i+1][j]!=5 ):
+        Flag=False
+    elif (Pile[-1]=="u") and (terrain[i][j-1]!=1 or terrain[i][j+1]!=1 or terrain[i][j-1]!=5 or terrain[i][j+1]!=5):
+        Flag=False
+    elif (Pile[-1]=="r") and (terrain[i-1][j]!=1 or terrain[i+1][j]!=1 or terrain[i-1][j]!=5 or terrain[i+1][j]!=5):
+        Flag=False
+    return terrain,Flag,Pile
+        #Execute move direction : up if move = down etc...
 
 def execute_move(terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'appel d'une fonction qui prend le terrain, le converti en dic[(x,y)]
     i,j=find(terrain,2)

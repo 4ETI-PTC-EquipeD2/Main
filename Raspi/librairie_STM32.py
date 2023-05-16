@@ -64,7 +64,7 @@ def obstacle_scan(terrain) :
         terrain (_type_): _description_
     """
 
-def avancer_case(terrain) :
+def avancer_case(terrain,run,Flag,Pile) :
     """TO DO, Audrey
         Trouver un moyen d'organiser le déplacement
     Args:
@@ -73,7 +73,7 @@ def avancer_case(terrain) :
     # 0 => non visiter, 1 => obstacle, 2 => robot, 3 => libre
 terrain = np.array([0000],[0000],[0000],[0000],[0000],[2000])
     """
-    Path.main(terrain)
+    return Path.main(terrain,run,Flag,Pile)
     
     
     
