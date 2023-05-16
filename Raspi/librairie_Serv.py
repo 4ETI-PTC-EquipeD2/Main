@@ -7,11 +7,7 @@ from firebase_admin import credentials
 from firebase_admin import db
 
 # Note: The path to the JSON file is different on your computer
-cred = credentials.Certificate("C:/Users/orani/OneDrive/Bureau/Key.json")
 
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://projet-pokemon-9145b-default-rtdb.europe-west1.firebasedatabase.app/'
-})
 
 def send_point(x, y, ref_str):
     """
