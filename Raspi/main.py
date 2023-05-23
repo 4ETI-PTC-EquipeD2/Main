@@ -49,7 +49,10 @@ qr_code_id=0
 #Boucle d'actions
 while (run) :
     #if attend_rep=False:
-        terrain = lST.obstacle_scan(terrain) #Scan du terrain devant à gauche et à droite relativement au robot.
+        lastMove='u'
+        if len(Pile!=0):
+             lastMove=Pile[-1]
+        terrain = lST.obstacle_scan(terrain,ser,lastMove) #Scan du terrain devant à gauche et à droite relativement au robot.
         run,terrain,Flag,Pile = lST.avancer_case(terrain,run,Flag,Pile) #Avance d'une case selon le chemin calculer par pathfinding avec les obstacles actuellement connus.
         dirr_obstacle=Pathfinding.obstacle_voisin(terrain) #Cherche si il y a un obstacle proche et recupère sa direction.
         if dirr_obstacle!="n":

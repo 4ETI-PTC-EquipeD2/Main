@@ -180,41 +180,41 @@ def affichage(terrain):
 def find_obstacle(terrain, commande, distance, lastMove):
     i,j = find(terrain, 2)
     dirr=dico_lastMove_listDirr[lastMove][commande] #Avec le lastMove, et la commande donnée, trouve la dirrection dans laquelle est actuellement tourné le capteur dans le refe
-    if dirr=='l':  #0°
-        if distance<50:
+    if dirr=='l':
+        if distance<50 and j>=2:
             terrain[i][j-1]=1
-        elif distance<100:
+        elif distance<100 and j>=3:
             terrain[i][j-2]=1
-        elif distance<150:
+        elif distance<150 and j>=4:
             terrain[i][j-3]=1
-    elif dirr=='u':  #90°
-        if distance<50:
+    elif dirr=='u':
+        if distance<50 and i>=2:
             terrain[i-1][j]=1
-        elif distance<100:
+        elif distance<100 and i>=3:
             terrain[i-2][j]=1
-        elif distance<150:
+        elif distance<150 and i>=4:
             terrain[i-3][j]=1
-        elif distance<200:
+        elif distance<200 and i>=5:
             terrain[i-4][j]=1
-        elif distance<250:
+        elif distance<250 and i>=6:
             terrain[i-5][j]=1
-    elif dirr=='r':  #180°
-        if distance<50:
-            terrain[i][j+1]=1
+    elif dirr=='r':
+        if distance<50 and j<=4:
+            terrain[i][j+1] 
         elif distance<100:
-            terrain[i][j+2]=1
+            terrain[i][j+2]=1 and j<=3
         elif distance<150:
-            terrain[i][j+2]=1
-    elif dirr=='d':  #90°
-        if distance<50:
+            terrain[i][j+2]=1 and j<=2
+    elif dirr=='d':
+        if distance<50 and i>=2:
             terrain[i+1][j]=1
-        elif distance<100:
+        elif distance<100 and i>=3:
             terrain[i+2][j]=1
-        elif distance<150:
+        elif distance<150 and i>=4:
             terrain[i+3][j]=1
-        elif distance<200:
+        elif distance<200 and i>=5:
             terrain[i+4][j]=1
-        elif distance<250:
+        elif distance<250 and i>=6:
             terrain[i+5][j]=1
     return terrain
 
