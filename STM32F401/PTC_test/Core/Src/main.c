@@ -50,7 +50,7 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 unsigned char received, serializerResp[100];
-unsigned char * commande, commande_1,commande_2;
+char commande[60], commande_1[60],commande_2[60];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -72,29 +72,29 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
 		HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
 		if (received == 'z'){
-			commande = forward_back(50,'-','-');
-			HAL_UART_Transmit(&huart6,commande,strlen((char*)commande),HAL_MAX_DELAY);
+			forward_back(50,'-','-',commande);
+			HAL_UART_Transmit(&huart6,commande,strlen(commande),HAL_MAX_DELAY);
 		}
 		else if (received == 'a'){
 			HAL_UART_Transmit(&huart6, (unsigned char *)"stop\r",5,HAL_MAX_DELAY);
 		}
 		else if (received == 'q'){
-			commande = turn_forward(-1);
-			commande_1 = *select_commande(1, commande);
-			commande_2 = *select_commande(1, commande);
-			HAL_UART_Transmit(&huart6,commande_1,strlen((char*)commande_1),HAL_MAX_DELAY);
-			HAL_UART_Transmit(&huart6,commande_2,strlen((char*)commande_2),HAL_MAX_DELAY);
+			turn_forward(-1, commande);
+			select_commande(1, commande, commande_1);
+			select_commande(2, commande,commande_2);
+			HAL_UART_Transmit(&huart6,commande_1,strlen(commande_1),HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart6,commande_2,strlen(commande_2),HAL_MAX_DELAY);
 		}
 		else if (received == 'd'){
-			commande = turn_forward(1);
-			commande_1 = *select_commande(1, commande);
-			commande_2 = *select_commande(1, commande);
-			HAL_UART_Transmit(&huart6,&commande_1,strlen((char*)commande_1),HAL_MAX_DELAY);
-			HAL_UART_Transmit(&huart6,&commande_2,strlen((char*)commande_2),HAL_MAX_DELAY);
+			turn_forward(1, commande);
+			select_commande(1, commande, commande_1);
+			select_commande(2, commande,commande_2);
+			HAL_UART_Transmit(&huart6,&commande_1,strlen(commande_1),HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart6,&commande_2,strlen(commande_2),HAL_MAX_DELAY);
 		}
 		else if (received == 's'){
-			commande = forward_back(50,' ',' ');
-			HAL_UART_Transmit(&huart6,commande,strlen((char*)commande),HAL_MAX_DELAY);
+			forward_back(50,' ',' ', commande);
+			HAL_UART_Transmit(&huart6,commande,strlen(commande),HAL_MAX_DELAY);
 		}
 	}
 	else if(huart == &huart6){ // commande recue du Serializer
@@ -107,6 +107,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
     HAL_UART_Receive_IT(huart, &received, 1);
 }
+
 /* USER CODE END 0 */
 
 /**

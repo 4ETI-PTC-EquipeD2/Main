@@ -4,7 +4,6 @@ Ce fichier contient toutes les fonctions utilisées par le fichier main pour la 
 du robot.
 """
 import Pathfinding as Path
-from serial import Serial
 
 #Fonctions UART ---------------------------------------------------------------------------------------------------------------------
 
@@ -32,10 +31,10 @@ def init_UART (ser, baudrate, port) :
     
     if ser.is_open :
         print("connected to", ser, "\n")
-        # line = ser.readline()
-        # line = line.decode("utf-8")
-        # if line :
-        #     print(line,'\n')
+        line = ser.readline()
+        line = line.decode("utf-8")
+        if line :
+            print(line,'\n')
         return True
     else :
         return False
@@ -51,11 +50,9 @@ def Send_Receive_UART (ser,data) :
     Returns:
         str: réponse
     """
-    print("--sending")
-    ser.write(bytes(data,encoding='utf8'))
-    print("--receiving")
-    line = ser.read(size=3)
-    # line = ser.readline()
+
+    ser.write(bytes(data))
+    line = ser.readline()
     line = line.decode("utf-8")
     return line
 
@@ -67,7 +64,7 @@ def obstacle_scan(terrain) :
         terrain (_type_): _description_
     """
 
-def avancer_case(terrain) :
+def avancer_case(terrain,run,Flag,Pile) :
     """TO DO, Audrey
         Trouver un moyen d'organiser le déplacement
     Args:
@@ -76,7 +73,7 @@ def avancer_case(terrain) :
     # 0 => non visiter, 1 => obstacle, 2 => robot, 3 => libre
 terrain = np.array([0000],[0000],[0000],[0000],[0000],[2000])
     """
-    Path.main(terrain)
+    return Path.main(terrain,run,Flag,Pile)
     
     
     
@@ -86,7 +83,6 @@ def attaque() :
     """_Boucle d'attaque, ne sort pas de lafonction tant que l'attaque n'est pas fini. 
     """
     
-
 if __name__ == "__main__":
     print("Starting UART...")
     ser = Serial()
