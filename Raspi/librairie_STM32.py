@@ -82,3 +82,19 @@ def attaque() :
     """_Boucle d'attaque, ne sort pas de lafonction tant que l'attaque n'est pas fini. 
     """
     
+if __name__ == "__main__":
+    print("Starting UART...")
+    ser = Serial()
+    init_UART(ser, 19200, 'COM13')
+    while(1):
+        cmd = input("appuyer sur une lettre puis ENTRER : ")
+        if len(cmd) != 1:
+            cmd = 'a'
+        print(cmd)
+
+        # print(Send_Receive_UART(ser, cmd))
+        ser.write(b'q')
+        # ser.write(bytes(cmd,encoding='utf8'))
+        while(1):
+            print(":",ser.readline())
+    ser.close()
