@@ -135,9 +135,10 @@ def affichage(terrain):
         print(terrain[i])
     print("\n\n")
 
-print(find_all_interieur(terrain,1))
-    
-main(terrain)
+
+if __name__ == "__main__":
+    print(find_all_interieur(terrain,1))
+    main(terrain)
 
 #Bonne chance
 
