@@ -5,6 +5,7 @@ import datetime
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
+from librairie_STM32 import Send_Receive_UART
 
 # Note: The path to the JSON file is different on your computer
 
@@ -60,6 +61,10 @@ def send_qr_id(qr_code_id):
 
     # Set the value of the last scanned QR code
     ref.set(qr_code_id)
+
+def read_qr_action():
+    ref=db.reference('action/attaque')
+    return ref.get()
 
 # Test the function
 
