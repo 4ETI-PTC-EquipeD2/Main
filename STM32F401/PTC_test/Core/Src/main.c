@@ -50,15 +50,15 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 unsigned char received, serializerResp[100];
-char commande[60], commande_1[60],commande_2[60];
+char commande[27];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART2_UART_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART6_UART_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -72,29 +72,27 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
 		HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
 		if (received == 'z'){
-			forward_back(50,'-','-',commande);
-			HAL_UART_Transmit(&huart6,commande,strlen(commande),HAL_MAX_DELAY);
+			forward_back(50.0,'-','-',commande);
+			HAL_UART_Transmit(&huart6, (unsigned char *)commande, strlen(commande),HAL_MAX_DELAY);
 		}
 		else if (received == 'a'){
 			HAL_UART_Transmit(&huart6, (unsigned char *)"stop\r",5,HAL_MAX_DELAY);
 		}
 		else if (received == 'q'){
 			turn_forward(-1, commande);
-			select_commande(1, commande, commande_1);
-			select_commande(2, commande,commande_2);
-			HAL_UART_Transmit(&huart6,commande_1,strlen(commande_1),HAL_MAX_DELAY);
-			HAL_UART_Transmit(&huart6,commande_2,strlen(commande_2),HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
 		else if (received == 'd'){
 			turn_forward(1, commande);
-			select_commande(1, commande, commande_1);
-			select_commande(2, commande,commande_2);
-			HAL_UART_Transmit(&huart6,&commande_1,strlen(commande_1),HAL_MAX_DELAY);
-			HAL_UART_Transmit(&huart6,&commande_2,strlen(commande_2),HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
 		else if (received == 's'){
-			forward_back(50,' ',' ', commande);
-			HAL_UART_Transmit(&huart6,commande,strlen(commande),HAL_MAX_DELAY);
+			forward_back(50.0,' ',' ', commande);
+			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
+		}
+		else if (received == 'x'){
+			forward_back(42.0,' ',' ', commande);
+			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
 	}
 	else if(huart == &huart6){ // commande recue du Serializer
@@ -138,9 +136,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART2_UART_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   char message [20] = "UART initialized\n";
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);

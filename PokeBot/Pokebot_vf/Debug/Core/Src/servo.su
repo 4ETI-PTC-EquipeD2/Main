@@ -1,0 +1,2 @@
+../Core/Src/servo.c:12:6:Distance_Sensor	40	static
+../Core/Src/servo.c:35:8:ServoMotor	80	static
