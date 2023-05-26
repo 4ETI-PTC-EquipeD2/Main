@@ -124,7 +124,7 @@ def live_video():
                 send_qr_id(code_data)
 
                 # Wait 5 seconds and quit
-                time.sleep(5)
+                time.sleep(30)
                 return
             
 
