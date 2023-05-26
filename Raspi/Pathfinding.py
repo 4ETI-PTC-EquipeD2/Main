@@ -110,7 +110,9 @@ def marche_arr_mode(terrain,Pile,Flag):
         as_move=execute_move(terrain,"l")
     if not as_move:
         Pile.append(move)
-        
+    #test
+    print("Pile: ",Pile)
+    print("i,j:",i,j)
     if (Pile[-1]=="d") and (terrain[i][j-1]!=1 or terrain[i][j+1]!=1 or terrain[i][j-1]!=5 or terrain[i][j+1]!=5):
         Flag=False
     elif (Pile[-1]=="l") and (terrain[i-1][j]!=1 or terrain[i+1][j]!=1 or terrain[i-1][j]!=5 or terrain[i+1][j]!=5 ):

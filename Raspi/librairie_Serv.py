@@ -34,6 +34,10 @@ def read_qr_action():
     ref=db.reference('action/attaque')
     return ref.get()
 
+def send_qr_action(id):
+    ref=db.reference('action/attaque')
+    ref.set(id)
+
 # Test the function
 def send_movement(movement, game_id):
     '''
