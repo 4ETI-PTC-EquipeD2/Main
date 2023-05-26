@@ -79,8 +79,14 @@ terrain = np.array([0000],[0000],[0000],[0000],[0000],[2000])
 #Fonction attaque -------------------------------------------------------------------------
 
 def attaque() :
-    """_Boucle d'attaque, ne sort pas de lafonction tant que l'attaque n'est pas fini. 
+    """_Boucle d'attaque, ne sort pas de lafonction tant que l'attaque n'est pas fini.
+        en fait on mettra un flag c'est quand même plus propre. 
     """
+
+def capture():
+    #Fonction pour tirer avec le cannon
+    Send_Receive_UART()
+
     
 if __name__ == "__main__":
     print("Starting UART...")
