@@ -16,7 +16,7 @@ firebase_admin.initialize_app(cred, {
 import math
 import Pathfinding
 import librairie_STM32 as lST
-#import serial
+import serial
 import librairie_Serv as lSV
 
 #Variables -------------------------------------------------
@@ -38,11 +38,12 @@ Pile=[]
 qr_code_id=0
 #Main -------------------------------------------------------------------------
 #à décomenter quand ce sera branché
-"""
-#ser = serial.Serial()
 #Initialisation 
-#lST.init_UART(ser, 19200,'COM7')
-"""
+
+ser = serial.Serial()
+COM = input("Entrer le numéro du COM (ex. 3, 4, ...) : ")
+lST.init_UART(ser, 19200, 'COM'+COM)
+
 
 
 
@@ -56,6 +57,8 @@ while (run) :
         terrain = lST.obstacle_scan(terrain,ser,lastMove) #Scan du terrain devant à gauche et à droite relativement au robot.
     """
     run,terrain,Flag,Pile = lST.avancer_case(terrain,run,Flag,Pile) #Avance d'une case selon le chemin calculer par pathfinding avec les obstacles actuellement connus.
+    ret=lST.capture()
+    print("Cannon: ",ret)
     """
     dirr_obstacle=Pathfinding.obstacle_voisin(terrain) #Cherche si il y a un obstacle proche et recupère sa direction.
     if dirr_obstacle!="n":
