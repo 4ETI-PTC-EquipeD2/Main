@@ -66,7 +66,7 @@ def obstacle_scan(terrain,ser,lastMove) :
         terrain=Path.find_obstacle(terrain, i, 250, lastMove) #Pose l'obstacle à la bonne distance selon la dirrection du capteur, la distance, la direction du robot
     return terrain
 
-def avancer_case(terrain,run,Flag,Pile) :
+def avancer_case(ser,terrain,run,Flag,Pile) :
     """TO DO, Audrey
         Trouver un moyen d'organiser le déplacement
     Args:
@@ -75,7 +75,7 @@ def avancer_case(terrain,run,Flag,Pile) :
     # 0 => non visiter, 1 => obstacle, 2 => robot, 3 => libre
 terrain = np.array([0000],[0000],[0000],[0000],[0000],[2000])
     """
-    return Path.main(terrain,run,Flag,Pile)
+    return Path.main(ser,terrain,run,Flag,Pile)
     
     
     

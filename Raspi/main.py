@@ -54,22 +54,26 @@ while (run) :
     lastMove='u'
     if len(Pile)!=0:
             lastMove=Pile[-1]
-    terrain = lST.obstacle_scan(terrain,ser,lastMove) #Scan du terrain devant à gauche et à droite relativement au robot.
-    run,terrain,Flag,Pile = lST.avancer_case(terrain,run,Flag,Pile) #Avance d'une case selon le chemin calculer par pathfinding avec les obstacles actuellement connus.
-    ret=lST.capture(ser)
-    print("Cannon: ",ret)
+    print("je sui")
+    #terrain = lST.obstacle_scan(terrain,ser,lastMove) #Scan du terrain devant à gauche et à droite relativement au robot.
+    run,terrain,Flag,Pile = lST.avancer_case(ser,terrain,run,Flag,Pile) #Avance d'une case selon le chemin calculer par pathfinding avec les obstacles actuellement connus.
+    #ret=lST.capture(ser)
+    #print("Cannon: ",ret)
 
+    """
     dirr_obstacle=Pathfinding.obstacle_voisin(terrain) #Cherche si il y a un obstacle proche et recupère sa direction.
     if dirr_obstacle!="n":
         print(dirr_obstacle)
         #Faudra préciser la dirrection et modif la fonction
-        qr_code_id=lSV.live_video() #Récupère le qrCode. à changer
+        #qr_code_id=lSV.live_video() #Récupère le qrCode. à changer
         lSV.send_qr_id(qr_code_id) #Envoie la qrCode à la BDD
         if qr_code_id!=0:
             ordre = lSV.read_qr_action() #Regarde si une action est à faire.
             if ordre !=-1:
                 lST.action(ordre,ser) # ici ordre sera un entier qui est des 0 à 3 pour les attaque, 4 pour la capture et 5 pour la fuite. -1 correspond à une valeur non attribuée.
                 lSV.send_qr_action(-1)
+
+    """
     
                        
            

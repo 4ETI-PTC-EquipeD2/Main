@@ -7,15 +7,16 @@ from firebase_admin import credentials
 from firebase_admin import db
 import cv2
 import base64
-from pyzbar.pyzbar import decode
+#from pyzbar.pyzbar import decode
 
 # Note: The path to the JSON file is different on your computer
-
+"""
 cred = credentials.Certificate("/home/admin/key/projet-pokemon-9145b-firebase-adminsdk-pyblk-c58d839000.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://projet-pokemon-9145b-default-rtdb.europe-west1.firebasedatabase.app/'
 })
+"""
 
 def send_qr_id(qr_code_id):
     '''
