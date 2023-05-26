@@ -1,6 +1,7 @@
 """
 Mathis Gorvien
 """
+import time
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
@@ -121,6 +122,11 @@ def live_video():
 
                 # print(f"QR Code Detected: {code_data}")
                 send_qr_id(code_data)
+
+                # Wait 5 seconds and quit
+                time.sleep(5)
+                return
+            
 
             # # Affichage du cadre résultant
             # cv2.imshow('frame', frame)
