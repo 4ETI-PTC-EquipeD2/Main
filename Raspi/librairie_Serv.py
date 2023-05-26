@@ -4,9 +4,9 @@ Mathis Gorvien
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
-#import cv2
+import cv2
 import base64
-#from pyzbar.pyzbar import decode
+from pyzbar.pyzbar import decode
 
 # Note: The path to the JSON file is different on your computer
 """
@@ -99,8 +99,8 @@ def live_video():
         camera = cv2.VideoCapture(0)
 
         # Set the resolution
-        camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320/2)  # width
-        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240/2)  # height
+        camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320/4)  # width
+        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240/4)  # height
 
         frame_count = 0
 
