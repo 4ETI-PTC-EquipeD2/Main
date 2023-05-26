@@ -58,12 +58,11 @@ def Send_Receive_UART (ser,data) :
     return line
 
 #Fonction déplacement -----------------------------------------------------------------
-def obstacle_scan(terrain) :
-    """TO DO, Seb
-
-    Args:
-        terrain (_type_): _description_
-    """
+def obstacle_scan(terrain,ser,lastMove) :
+    for i in range(3): #i est la commande, et se balade entre 0 et 2 compris, pour scan à gauche, puis devant, et enfin à droite, relativement à la direction du robot, donc de la direction de son dernier movement.
+        dist=Send_Receive_UART(ser,i) #renvoie la distance selon si la direction demandée est 0, 1 ou 2
+        terrain=Path.find_obstacle(terrain, i, dist, lastMove) #Pose l'obstacle à la bonne distance selon la dirrection du capteur, la distance, la direction du robot
+    return terrain
 
 def avancer_case(terrain,run,Flag,Pile) :
     """TO DO, Audrey

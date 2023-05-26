@@ -6,8 +6,9 @@
 import time as t
 import map_movement as m
 gameId="test"
+dico_lastMove_listDirr={"u": ["l","u","r"],"r": ["u","r","d"],"d": ["r","d","l"],"l": ["d","l","u"]}
 """
-terrain =          [[1,1,1,1,1,1],
+terrain =         [[1,1,1,1,1,1],
                    [1,0,0,1,0,1],
                    [1,0,0,1,0,1],
                    [1,1,0,0,0,1],
@@ -95,17 +96,20 @@ def main(terrain,run,Flag,Pile):
     return run,terrain,Flag,Pile
 
 def marche_arr_mode(terrain,Pile,Flag):
+    as_move=True
     i,j=find(terrain,2)
     
     move = Pile.pop()
     if(move=="d"):
-        execute_move(terrain,"u")
+        as_move=execute_move(terrain,"u")
     elif(move=="l"):
-        execute_move(terrain,"r")
+        as_move=execute_move(terrain,"r")
     elif(move=="u"):
-        execute_move(terrain,"d")
+        as_move=execute_move(terrain,"d")
     elif(move=="r"):
-        execute_move(terrain,"l")
+        as_move=execute_move(terrain,"l")
+    if not as_move:
+        Pile.append(move)
         
     if (Pile[-1]=="d") and (terrain[i][j-1]!=1 or terrain[i][j+1]!=1 or terrain[i][j-1]!=5 or terrain[i][j+1]!=5):
         Flag=False
@@ -121,63 +125,109 @@ def marche_arr_mode(terrain,Pile,Flag):
 def execute_move(terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'appel d'une fonction qui prend le terrain, le converti en dic[(x,y)]
     i,j=find(terrain,2)
     if dirr=="d":
+        """
+        reussi=Send_Receive_UART('dx')
+        if reussi=="ack":
+            #Met le reste là
+        """
         terrain[i][j]=4
         terrain[i+1][j]=2
         m.send_movement(2,gameId)
-        #Move down
+        
     elif dirr=="l":
+        """
+        reussi=Send_Receive_UART('lx')
+        if reussi=="ack":
+            #Met le reste là
+        """
         terrain[i][j]=4
         terrain[i][j-1]=2
         m.send_movement(3,gameId)
-        #Move left
+        
     elif dirr=="u":
+        """
+        reussi=Send_Receive_UART('ux')
+        if reussi=="ack":
+            #Met le reste là
+        """
         terrain[i][j]=4
         terrain[i-1][j]=2
         m.send_movement(1,gameId)
-        #Move up
+        
     elif dirr=="r":
+        """
+        reussi=Send_Receive_UART('rx')
+        if reussi=="ack":
+            #Met le reste là
+        """
         terrain[i][j]=4
         terrain[i][j+1]=2
         m.send_movement(4,gameId)
-        #Move right
+    
+    
+        
     affichage(terrain)
     t.sleep(1)
+    #if reussi=="nack":
+        #return False
+    return True
 
 def affichage(terrain):
     for i in range(len(terrain)):
         print(terrain[i])
     print("\n\n")
 
-def find_obstacle(terrain, commande, distance):
+def find_obstacle(terrain, commande, distance, lastMove):
     i,j = find(terrain, 2)
-    if commande=='0':  #0°
-        if distance<50:
+    dirr=dico_lastMove_listDirr[lastMove][commande] #Avec le lastMove, et la commande donnée, trouve la dirrection dans laquelle est actuellement tourné le capteur dans le refe
+    if dirr=='l':
+        if distance<50 and j>=2:
             terrain[i][j-1]=1
-        elif distance<100:
+        elif distance<100 and j>=3:
             terrain[i][j-2]=1
-        elif distance<150:
+        elif distance<150 and j>=4:
             terrain[i][j-3]=1
-    elif commande=='1':  #90°
-        if distance<50:
+    elif dirr=='u':
+        if distance<50 and i>=2:
             terrain[i-1][j]=1
-        elif distance<100:
+        elif distance<100 and i>=3:
             terrain[i-2][j]=1
-        elif distance<150:
+        elif distance<150 and i>=4:
             terrain[i-3][j]=1
-        elif distance<200:
+        elif distance<200 and i>=5:
             terrain[i-4][j]=1
-        elif distance<250:
+        elif distance<250 and i>=6:
             terrain[i-5][j]=1
-    elif commande=='2':  #180°
-        if distance<50:
-            terrain[i][j+1]=1
+    elif dirr=='r':
+        if distance<50 and j<=4:
+            terrain[i][j+1] 
         elif distance<100:
-            terrain[i][j+2]=1
+            terrain[i][j+2]=1 and j<=3
         elif distance<150:
-            terrain[i][j+2]=1
+            terrain[i][j+2]=1 and j<=2
+    elif dirr=='d':
+        if distance<50 and i>=2:
+            terrain[i+1][j]=1
+        elif distance<100 and i>=3:
+            terrain[i+2][j]=1
+        elif distance<150 and i>=4:
+            terrain[i+3][j]=1
+        elif distance<200 and i>=5:
+            terrain[i+4][j]=1
+        elif distance<250 and i>=6:
+            terrain[i+5][j]=1
     return terrain
 
 if __name__ == "__main__":
+    #Alors c'est sensé servir pour testé mais ya pas la bcl du main donc ttfaçon on ira pas bien loin...
+    terrain =     [[1,1,1,1,1,1],
+                   [1,0,0,1,0,1],
+                   [1,0,0,1,0,1],
+                   [1,1,0,0,0,1],
+                   [1,0,0,0,0,1],
+                   [1,0,0,0,0,1],
+                   [1,2,0,0,0,1],
+                   [1,1,1,1,1,1]]
     listObstacles=find_all_interieur(terrain,1)
     for i in listObstacles:
         m.send_obstacle(i,gameId)

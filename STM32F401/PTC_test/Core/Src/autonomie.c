@@ -13,36 +13,47 @@
 //Fonctions --------------------------------------------------------------------------------------
 void forward_back (float l,char wheel_1,char wheel_2,char * commande){
 	if (l <= 50) {
-		int tick_value = (int)(l*700*1.15)/20;
-		sprintf(commande,"digo 1:%c%i:%c10 2:%c%i:10\r",wheel_1,tick_value,wheel_2,tick_value);
+		int tick_value = (int)(l*650)/20;
+		sprintf(commande,"digo 1:%c%i:8 2:%c%i:8\r",wheel_1,tick_value,wheel_2,tick_value);
 	}
 }
 
 void turn_forward (int angle, char * commande){
-	float r = 13.5;
+	float r = 11;
 	float distance = (M_PI*r)/2;
 	if (angle < 0){ //tourner à gauche
-		char first_value[60];
-		forward_back(distance,' ','-', first_value);
-		char second_value [60];
-		forward_back(50.0,'-','-', second_value);
-		sprintf(commande,"%s/%s",first_value,second_value);
+		forward_back(distance,' ','-', commande);
 	}
 	else if (angle > 0) {//tourner à droite
-		char first_value [60];
-		forward_back(distance,'-',' ', first_value);
-		char second_value [60];
-		forward_back(50.0,'-','-', second_value);
-		sprintf(commande,"%s/%s",first_value,second_value);
-	}
-	else {//demi-tour
-		char first_value[60];
-		forward_back(4*distance,'-',' ', first_value);
-		char second_value [60];
-		forward_back(50.0,'-','-', second_value);
-		sprintf(commande,"%s/%s",first_value,second_value);
+		forward_back(distance,'-',' ', commande);
 	}
 }
+
+//void turn_forward (int angle, char * commande_1, char * commande_2){
+//	float r = 11;
+//	float distance = (M_PI*r)/2;
+//	if (angle < 0){ //tourner à gauche
+//		//char first_value[60];
+//		forward_back(distance,' ','-', commande_1);
+//		//char second_value [60];
+//		forward_back(42.0,'-','-', commande_2);
+//		//sprintf(commande,"%s/%s",first_value,second_value);
+//	}
+//	else if (angle > 0) {//tourner à droite
+//		//char first_value [60];
+//		forward_back(distance,'-',' ', commande_1);
+//		//char second_value [60];
+//		forward_back(42.0,'-','-', commande_2);
+//		//sprintf(commande,"%s/%s",first_value,second_value);
+//	}
+//	else {//demi-tour
+//		//char first_value[60];
+//		forward_back(4*distance,'-',' ', commande_1);
+//		//char second_value [60];
+//		forward_back(42.0,'-','-', commande_2);
+//		//sprintf(commande,"%s/%s",first_value,second_value);
+//	}
+//}
 
 void select_commande (int n_com, char * commande,char * commande_i){
 	int car;
