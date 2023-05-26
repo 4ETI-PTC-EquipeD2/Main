@@ -22,8 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+#include <stdio.h>
 #include "autonomie.h"
-#include "servo.h"
+//#include "servo.h"
 
 //#include "../UART_comm/handleCmd.h"
 /* USER CODE END Includes */
@@ -77,6 +78,51 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void Distance_Sensor(){
+  	  uint32_t start_time = 0;
+  	  uint32_t end_time = 0;
+  	  float elapsed_time = 0;
+  	  float sound_speed = 343.595*100;
+
+
+  	  HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_SET);
+  	  HAL_Delay(1); //ms
+  	  HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_RESET);
+
+  	  while (HAL_GPIO_ReadPin(ECHO_GPIO_Port, ECHO_Pin) == GPIO_PIN_RESET);
+
+  	  HAL_TIM_Base_Start(&htim2);
+  	  start_time = __HAL_TIM_GET_COUNTER(&htim2);
+
+  	  while (HAL_GPIO_ReadPin(ECHO_GPIO_Port, ECHO_Pin) == GPIO_PIN_SET);
+
+  	  end_time = __HAL_TIM_GET_COUNTER(&htim2);
+  	  elapsed_time = ((float) (end_time - start_time)) / ((float) HAL_RCC_GetPCLK1Freq() * 2);
+  	  distance_ul = 35 * sound_speed * elapsed_time;
+    }
+
+  void ServoMotor(int angle){
+	  switch (angle){
+	  case 0:
+		  htim3.Instance->CCR2 = 3; //0°
+		  HAL_Delay(2000);
+		  Distance_Sensor();
+		  break;
+	  case 90:
+		  htim3.Instance->CCR2 = 7; //90°
+		  HAL_Delay(2000);
+		  Distance_Sensor();
+		  break;
+	  case 180:
+		  htim3.Instance->CCR2 = 12; //180°
+		  HAL_Delay(2000);
+		  Distance_Sensor();
+		  break;
+	  default:
+		  break;
+	  }
+  }
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 
@@ -107,15 +153,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
 		else if (received == 'u'){//angle 0
-			ServoMotor(0,distance_ul,htim2,htim3);
+			ServoMotor(0);
 			HAL_UART_Transmit(&huart1, (unsigned char) distance_ul, strlen((char)distance_ul), HAL_MAX_DELAY);
 		}
 		else if (received == 'i'){//angle 90
-			ServoMotor(90,distance_ul,htim2,htim3);
+			ServoMotor(90);
 			HAL_UART_Transmit(&huart1, (unsigned char) distance_ul, strlen((char)distance_ul), HAL_MAX_DELAY);
 		}
 		else if (received == 'o'){//angle 180
-			ServoMotor(180,distance_ul,htim2,htim3);
+			ServoMotor(180);
 			HAL_UART_Transmit(&huart1, (unsigned char) distance_ul, strlen((char)distance_ul), HAL_MAX_DELAY);
 		}
 		else if (received == 't'){ // shoot
@@ -133,6 +179,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
     HAL_UART_Receive_IT(huart, &received, 1);
 }
+
+
 
 /* USER CODE END 0 */
 

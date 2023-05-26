@@ -60,8 +60,8 @@ all: main-build
 main-build: Pokebot_vf.elf secondary-outputs
 
 # Tool invocations
-Pokebot_vf.elf Pokebot_vf.map: $(OBJS) $(USER_OBJS) C:\Users\anico\STM32CubeIDE\workspace_2\Pokebot_vf\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Pokebot_vf.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\anico\STM32CubeIDE\workspace_2\Pokebot_vf\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Pokebot_vf.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Pokebot_vf.elf Pokebot_vf.map: $(OBJS) $(USER_OBJS) C:\Users\anico\Desktop\Ecole\4a\PTC\Main\PokeBot\Pokebot_vf\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Pokebot_vf.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\anico\Desktop\Ecole\4a\PTC\Main\PokeBot\Pokebot_vf\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Pokebot_vf.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
