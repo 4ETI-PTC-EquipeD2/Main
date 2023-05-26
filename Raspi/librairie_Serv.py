@@ -80,6 +80,9 @@ def live_video():
     db_ref = db.reference('video')
     video_state_ref = db.reference('video_state')
 
+    # Timer
+    qr_detected_at = None
+
     # Function to set the video state
     def set_video_state(state):
         video_state_ref.set(state)
@@ -123,9 +126,11 @@ def live_video():
                 # print(f"QR Code Detected: {code_data}")
                 send_qr_id(code_data)
 
-                # Wait 5 seconds and quit
-                time.sleep(30)
-                return
+                if qr_detected_at is None:  # Enregistrez l'heure de la détection du QR code si ce n'est pas déjà fait
+                    qr_detected_at = time.time()
+            
+            if qr_detected_at is not None and time.time() - qr_detected_at >= 10:  # Vérifiez si 10 secondes se sont écoulées depuis la détection du QR code
+                break
             
 
             # # Affichage du cadre résultant
