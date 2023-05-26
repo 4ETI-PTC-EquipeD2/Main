@@ -53,9 +53,19 @@ def Send_Receive_UART (ser,data) :
     """
 
     ser.write(bytes(data,encoding='utf8'))
-    line = ser.readline()
+    line = ser.read_until(expected = bytes("K",encoding='utf8'))
     line = line.decode("utf-8")
-    return line
+    res = ""
+    for car in line :
+        if(car == 'N') :
+            res += car
+        elif(car == 'A') :
+            res += car
+        elif(car == 'C') :
+            res += car
+        elif(car == 'K') :
+            res += car
+    return res
 
 #Fonction déplacement -----------------------------------------------------------------
 def obstacle_scan(terrain,ser,lastMove) :

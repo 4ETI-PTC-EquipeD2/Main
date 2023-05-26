@@ -132,7 +132,7 @@ def execute_move(ser,terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'a
         
         reussi=lST.Send_Receive_UART(ser,'s')
         print("après send:",reussi)
-        if reussi=="ACK\r\n":
+        if reussi=="ACK":
             terrain[i][j]=4
             terrain[i+1][j]=2
             m.send_movement(2,gameId)
@@ -141,10 +141,11 @@ def execute_move(ser,terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'a
         
         reussi=lST.Send_Receive_UART(ser,'q')
         print("après send:",reussi)
-        if reussi=="ACK\r\n":
+        if reussi=="ACK":
+            t.sleep(1)
             reussi=lST.Send_Receive_UART(ser,'x')
             print("x: ",reussi)
-            if reussi=="ACK\r\n":
+            if reussi=="ACK":
             #Met le reste là
                 terrain[i][j]=4
                 terrain[i][j-1]=2
@@ -154,7 +155,7 @@ def execute_move(ser,terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'a
 
         reussi=lST.Send_Receive_UART(ser,'z')
         print("après send:",reussi)
-        if reussi=="ACK\r\n":
+        if reussi=="ACK":
             print("OUIIs")
             #Met le reste là
             terrain[i][j]=4
@@ -164,10 +165,11 @@ def execute_move(ser,terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'a
     elif dirr=="r":
         reussi=lST.Send_Receive_UART(ser,'d')
         print("après send:",reussi)
-        if reussi=="ACK\r\n":
+        if reussi=="ACK":
+            t.sleep(1)
             reussi=lST.Send_Receive_UART(ser,'x')
             print("x: ",reussi)
-            if reussi=="ACK\r\n":
+            if reussi=="ACK":
             #Met le reste là
                 terrain[i][j]=4
                 terrain[i][j+1]=2
@@ -177,7 +179,7 @@ def execute_move(ser,terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'a
         
     affichage(terrain)
     t.sleep(1)
-    #if reussi=="nACK\r\n":
+    #if reussi=="nACK":
         #return False
     return True
 
