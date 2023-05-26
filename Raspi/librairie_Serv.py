@@ -1,21 +1,22 @@
 """
 Mathis Gorvien
 """
+import time
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
-#import cv2
+import cv2
 import base64
-#from pyzbar.pyzbar import decode
+from pyzbar.pyzbar import decode
 
 # Note: The path to the JSON file is different on your computer
-"""
-cred = credentials.Certificate('C:/Users/orani/OneDrive/Bureau/Key2.json')
+
+cred = credentials.Certificate("/home/admin/key/projet-pokemon-9145b-firebase-adminsdk-pyblk-c58d839000.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://projet-pokemon-9145b-default-rtdb.europe-west1.firebasedatabase.app/'
 })
-"""
+
 def send_qr_id(qr_code_id):
     '''
     Envoie la valeur du dernier QR code scanné à la base de données Firebase.
@@ -83,6 +84,9 @@ def live_video():
     db_ref = db.reference('video')
     video_state_ref = db.reference('video_state')
 
+    # Timer
+    qr_detected_at = None
+
     # Function to set the video state
     def set_video_state(state):
         video_state_ref.set(state)
@@ -103,8 +107,8 @@ def live_video():
         camera = cv2.VideoCapture(0)
 
         # Set the resolution
-        camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320/2)  # width
-        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240/2)  # height
+        camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320/4)  # width
+        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240/4)  # height
 
         frame_count = 0
 
@@ -125,6 +129,13 @@ def live_video():
 
                 # print(f"QR Code Detected: {code_data}")
                 send_qr_id(code_data)
+
+                if qr_detected_at is None:  # Enregistrez l'heure de la détection du QR code si ce n'est pas déjà fait
+                    qr_detected_at = time.time()
+            
+            if qr_detected_at is not None and time.time() - qr_detected_at >= 10:  # Vérifiez si 10 secondes se sont écoulées depuis la détection du QR code
+                break
+            
 
             # # Affichage du cadre résultant
             # cv2.imshow('frame', frame)
