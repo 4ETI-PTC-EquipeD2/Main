@@ -42,7 +42,7 @@ qr_code_id=0
 
 ser = serial.Serial()
 COM = input("Entrer le numéro du COM (ex. 3, 4, ...) : ")
-lST.init_UART(ser, 19200, 'COM'+COM)
+lST.init_UART(ser, 19200, 'Device 005')
 print("UIIII",run)
 
 
