@@ -62,9 +62,8 @@ while (run) :
     dirr_obstacle=Pathfinding.obstacle_voisin(terrain) #Cherche si il y a un obstacle proche et recupère sa direction.
     if dirr_obstacle!="n":
         print(dirr_obstacle)
-
-        #qr_code_id=Pathfinding.find_obstacle(dirr_obstacle) #Récupère le qrCode. à changer
-        qr_code_id=2
+        #Faudra préciser la dirrection et modif la fonction
+        qr_code_id=lSV.live_video() #Récupère le qrCode. à changer
         lSV.send_qr_id(qr_code_id) #Envoie la qrCode à la BDD
         if qr_code_id!=0:
             ordre = lSV.read_qr_action() #Regarde si une action est à faire.
