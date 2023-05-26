@@ -146,8 +146,11 @@ def execute_move(terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'appel
         
     elif dirr=="u":
         """
-        reussi=Send_Receive_UART('ux')
+        reussi=Send_Receive_UART('u')
         if reussi=="ack":
+            reussi=Send_Receive_UART('x')
+            if reussi=="ack":
+                #Met le reste là
             #Met le reste là
         """
         terrain[i][j]=4
@@ -234,6 +237,7 @@ if __name__ == "__main__":
     main(terrain)
 
 #Bonne chance
+
 
 
     

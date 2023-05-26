@@ -3,7 +3,8 @@ Auteurs : Audrey Nicolle, ...
 Ce fichier contient toutes les fonctions utilisées par le fichier main pour la boucle d'action
 du robot.
 """
-import Pathfinding as Path
+# import Pathfinding as Path
+from serial import Serial
 
 #Fonctions UART ---------------------------------------------------------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ def Send_Receive_UART (ser,data) :
         str: réponse
     """
 
-    ser.write(bytes(data))
+    ser.write(bytes(data,encoding='utf8'))
     line = ser.readline()
     line = line.decode("utf-8")
     return line
@@ -78,23 +79,27 @@ terrain = np.array([0000],[0000],[0000],[0000],[0000],[2000])
     
 #Fonction attaque -------------------------------------------------------------------------
 
-def attaque() :
-    """_Boucle d'attaque, ne sort pas de lafonction tant que l'attaque n'est pas fini. 
+def attaque(id) :
+    """_Boucle d'attaque, ne sort pas de lafonction tant que l'attaque n'est pas fini.
     """
+
+def capture():
+    #Fonction pour tirer avec le cannon
+    print("PIOU")
+    ret=Send_Receive_UART("t")
+    return ret
+
     
 if __name__ == "__main__":
-    print("Starting UART...")
     ser = Serial()
-    init_UART(ser, 19200, 'COM13')
+    COM = input("Entrer le numéro du COM (ex. 3, 4, ...) : ")
+    init_UART(ser, 19200, 'COM'+COM)
     while(1):
         cmd = input("appuyer sur une lettre puis ENTRER : ")
         if len(cmd) != 1:
             cmd = 'a'
-        print(cmd)
+        print("sent:",cmd)
 
-        # print(Send_Receive_UART(ser, cmd))
-        ser.write(b'q')
-        # ser.write(bytes(cmd,encoding='utf8'))
-        while(1):
-            print(":",ser.readline())
+        received = Send_Receive_UART(ser, cmd)
+        print("received:",received)
     ser.close()
