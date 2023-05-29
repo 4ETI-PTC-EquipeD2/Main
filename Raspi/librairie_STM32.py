@@ -119,7 +119,7 @@ if __name__ == "__main__":
         if len(cmd) != 1:
             cmd = 'a'
         print("sent:",cmd)
-
+        
         received = Send_Receive_UART(ser, cmd)
         print("received:",received)
     ser.close()
