@@ -3,9 +3,9 @@ Auteurs : Audrey Nicolle, ...
 Ce fichier contient toutes les fonctions utilisées par le fichier main pour la boucle d'action
 du robot.
 """
-# import Pathfinding as Path
+import Pathfinding as Path
 from serial import Serial
-
+import copy as c
 #Fonctions UART ---------------------------------------------------------------------------------------------------------------------
 
 def init_UART (ser, baudrate, port) :
@@ -53,18 +53,30 @@ def Send_Receive_UART (ser,data) :
     """
 
     ser.write(bytes(data,encoding='utf8'))
-    line = ser.readline()
+    line = ser.read_until(expected = bytes("K",encoding='utf8'))
     line = line.decode("utf-8")
-    return line
+    res = ""
+    for car in line :
+        if(car == 'N') :
+            res += car
+        elif(car == 'A') :
+            res += car
+        elif(car == 'C') :
+            res += car
+        elif(car == 'K') :
+            res += car
+    return res
 
 #Fonction déplacement -----------------------------------------------------------------
 def obstacle_scan(terrain,ser,lastMove) :
     for i in range(3): #i est la commande, et se balade entre 0 et 2 compris, pour scan à gauche, puis devant, et enfin à droite, relativement à la direction du robot, donc de la direction de son dernier movement.
-        dist=Send_Receive_UART(ser,i) #renvoie la distance selon si la direction demandée est 0, 1 ou 2
-        terrain=Path.find_obstacle(terrain, i, dist, lastMove) #Pose l'obstacle à la bonne distance selon la dirrection du capteur, la distance, la direction du robot
+        cmd=c.copy(i)
+        dist=Send_Receive_UART(ser,str(cmd)) #renvoie la distance selon si la direction demandée est 0, 1 ou 2
+        print("commande obstacle_scan: ",dist)
+        terrain=Path.find_obstacle(terrain, i, 250, lastMove) #Pose l'obstacle à la bonne distance selon la dirrection du capteur, la distance, la direction du robot
     return terrain
 
-def avancer_case(terrain,run,Flag,Pile) :
+def avancer_case(ser,terrain,run,Flag,Pile) :
     """TO DO, Audrey
         Trouver un moyen d'organiser le déplacement
     Args:
@@ -73,20 +85,28 @@ def avancer_case(terrain,run,Flag,Pile) :
     # 0 => non visiter, 1 => obstacle, 2 => robot, 3 => libre
 terrain = np.array([0000],[0000],[0000],[0000],[0000],[2000])
     """
-    return Path.main(terrain,run,Flag,Pile)
+    return Path.main(ser,terrain,run,Flag,Pile)
     
     
     
 #Fonction attaque -------------------------------------------------------------------------
 
-def attaque(id) :
+def action(id,ser):
+    #id 4 fuite
+    print("action id: ",id)
+    if id==5:
+        capture(ser,id)
+    else:
+        attaque(ser,id)
+
+def attaque(id,ser) :
     """_Boucle d'attaque, ne sort pas de lafonction tant que l'attaque n'est pas fini.
     """
 
-def capture():
+def capture(ser):
     #Fonction pour tirer avec le cannon
     print("PIOU")
-    ret=Send_Receive_UART("t")
+    ret=Send_Receive_UART(ser,"t")
     return ret
 
     

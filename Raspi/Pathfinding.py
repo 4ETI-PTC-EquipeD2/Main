@@ -5,6 +5,7 @@
 
 import time as t
 import map_movement as m
+import librairie_STM32 as lST
 gameId="test"
 dico_lastMove_listDirr={"u": ["l","u","r"],"r": ["u","r","d"],"d": ["r","d","l"],"l": ["d","l","u"]}
 """
@@ -58,7 +59,7 @@ def find_all_interieur(terrain,id):
                 listId.append([j-1,i-1])
     return listId
 
-def main(terrain,run,Flag,Pile):
+def main(ser,terrain,run,Flag,Pile):
     x,y=find(terrain,2)
     if x==-1:
         print("Ya pas de robot")
@@ -70,17 +71,17 @@ def main(terrain,run,Flag,Pile):
         i,j=find(terrain,2)
         #cas=terrain[y]
         if terrain[i-1][j]==0: #Repasse à 3 le test
-            execute_move(terrain,"u")
+            execute_move(ser,terrain,"u")
             Pile.append("u")
         elif terrain[i][j+1]==0: #Repasse à 3 le test
-            execute_move(terrain,"r")
+            execute_move(ser,terrain,"r")
             Pile.append("r")
         elif terrain[i+1][j]==0: #Repasse à 3 le test
             
-            execute_move(terrain,"d")
+            execute_move(ser,terrain,"d")
             Pile.append("d")
         elif terrain[i][j-1]==0: #Repasse à 3 le test
-            execute_move(terrain,"l")
+            execute_move(ser,terrain,"l")
             Pile.append("l")
         else:
             i,j=find(terrain,0)
@@ -95,22 +96,24 @@ def main(terrain,run,Flag,Pile):
         #print("Sortie March arr")
     return run,terrain,Flag,Pile
 
-def marche_arr_mode(terrain,Pile,Flag):
+def marche_arr_mode(ser,terrain,Pile,Flag):
     as_move=True
     i,j=find(terrain,2)
     
     move = Pile.pop()
     if(move=="d"):
-        as_move=execute_move(terrain,"u")
+        as_move=execute_move(ser,terrain,"u")
     elif(move=="l"):
-        as_move=execute_move(terrain,"r")
+        as_move=execute_move(ser,terrain,"r")
     elif(move=="u"):
-        as_move=execute_move(terrain,"d")
+        as_move=execute_move(ser,terrain,"d")
     elif(move=="r"):
-        as_move=execute_move(terrain,"l")
+        as_move=execute_move(ser,terrain,"l")
     if not as_move:
         Pile.append(move)
-        
+    #test
+    print("Pile: ",Pile)
+    print("i,j:",i,j)
     if (Pile[-1]=="d") and (terrain[i][j-1]!=1 or terrain[i][j+1]!=1 or terrain[i][j-1]!=5 or terrain[i][j+1]!=5):
         Flag=False
     elif (Pile[-1]=="l") and (terrain[i-1][j]!=1 or terrain[i+1][j]!=1 or terrain[i-1][j]!=5 or terrain[i+1][j]!=5 ):
@@ -122,56 +125,61 @@ def marche_arr_mode(terrain,Pile,Flag):
     return terrain,Flag,Pile
         #Execute move direction : up if move = down etc...
 
-def execute_move(terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'appel d'une fonction qui prend le terrain, le converti en dic[(x,y)]
+def execute_move(ser,terrain,dirr): #Essaye de rajouter à chaque #Move dirr l'appel d'une fonction qui prend le terrain, le converti en dic[(x,y)]
     i,j=find(terrain,2)
+    print("avant send")
     if dirr=="d":
-        """
-        reussi=Send_Receive_UART('dx')
-        if reussi=="ack":
-            #Met le reste là
-        """
-        terrain[i][j]=4
-        terrain[i+1][j]=2
-        m.send_movement(2,gameId)
+        
+        reussi=lST.Send_Receive_UART(ser,'s')
+        print("après send:",reussi)
+        if reussi=="ACK":
+            terrain[i][j]=4
+            terrain[i+1][j]=2
+            m.send_movement(2,gameId)
         
     elif dirr=="l":
-        """
-        reussi=Send_Receive_UART('lx')
-        if reussi=="ack":
+        
+        reussi=lST.Send_Receive_UART(ser,'q')
+        print("après send:",reussi)
+        if reussi=="ACK":
+            t.sleep(1)
+            reussi=lST.Send_Receive_UART(ser,'x')
+            print("x: ",reussi)
+            if reussi=="ACK":
             #Met le reste là
-        """
-        terrain[i][j]=4
-        terrain[i][j-1]=2
-        m.send_movement(3,gameId)
+                terrain[i][j]=4
+                terrain[i][j-1]=2
+                m.send_movement(3,gameId)
         
     elif dirr=="u":
-        """
-        reussi=Send_Receive_UART('u')
-        if reussi=="ack":
-            reussi=Send_Receive_UART('x')
-            if reussi=="ack":
-                #Met le reste là
+
+        reussi=lST.Send_Receive_UART(ser,'z')
+        print("après send:",reussi)
+        if reussi=="ACK":
+            print("OUIIs")
             #Met le reste là
-        """
-        terrain[i][j]=4
-        terrain[i-1][j]=2
-        m.send_movement(1,gameId)
+            terrain[i][j]=4
+            terrain[i-1][j]=2
+            m.send_movement(1,gameId)
         
     elif dirr=="r":
-        """
-        reussi=Send_Receive_UART('rx')
-        if reussi=="ack":
+        reussi=lST.Send_Receive_UART(ser,'d')
+        print("après send:",reussi)
+        if reussi=="ACK":
+            t.sleep(1)
+            reussi=lST.Send_Receive_UART(ser,'x')
+            print("x: ",reussi)
+            if reussi=="ACK":
             #Met le reste là
-        """
-        terrain[i][j]=4
-        terrain[i][j+1]=2
-        m.send_movement(4,gameId)
+                terrain[i][j]=4
+                terrain[i][j+1]=2
+                m.send_movement(4,gameId)
     
     
         
     affichage(terrain)
     t.sleep(1)
-    #if reussi=="nack":
+    #if reussi=="nACK":
         #return False
     return True
 

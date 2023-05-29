@@ -22,8 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+#include <stdio.h>
 #include "autonomie.h"
-#include "servo.h"
+//#include "servo.h"
 
 //#include "../UART_comm/handleCmd.h"
 /* USER CODE END Includes */
@@ -56,9 +57,9 @@ UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
 unsigned char received, serializerResp[100];
-char commande[27];
+char commande[27], buffer[27];
 float distance_ul;
-unsigned char flagTirCanon = 0;
+unsigned char flagTirCanon = 0, flagServo0 = 0, flagServo90 = 0, flagServo180 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -77,12 +78,58 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void Distance_Sensor(){
+  	  uint32_t start_time = 0;
+  	  uint32_t end_time = 0;
+  	  float elapsed_time = 0;
+  	  float sound_speed = 343.595*100;
+
+
+  	  HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_SET);
+  	  HAL_Delay(1); //ms
+  	  HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_RESET);
+
+  	  while (HAL_GPIO_ReadPin(ECHO_GPIO_Port, ECHO_Pin) == GPIO_PIN_RESET);
+
+  	  HAL_TIM_Base_Start(&htim2);
+  	  start_time = __HAL_TIM_GET_COUNTER(&htim2);
+
+  	  while (HAL_GPIO_ReadPin(ECHO_GPIO_Port, ECHO_Pin) == GPIO_PIN_SET);
+
+  	  end_time = __HAL_TIM_GET_COUNTER(&htim2);
+  	  elapsed_time = ((float) (end_time - start_time)) / ((float) HAL_RCC_GetPCLK1Freq() * 2);
+  	  distance_ul = 35 * sound_speed * elapsed_time;
+  	  sprintf(buffer,"%f \n",distance_ul);
+    }
+
+  void ServoMotor(int angle){
+	  switch (angle){
+	  case 0:
+		  htim3.Instance->CCR2 = 3; //0°
+		  HAL_Delay(2000);
+		  Distance_Sensor();
+		  break;
+	  case 90:
+		  htim3.Instance->CCR2 = 7; //90°
+		  HAL_Delay(2000);
+		  Distance_Sensor();
+		  break;
+	  case 180:
+		  htim3.Instance->CCR2 = 12; //180°
+		  HAL_Delay(2000);
+		  Distance_Sensor();
+		  break;
+	  default:
+		  break;
+	  }
+  }
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 
 	if (huart == &huart1){ // commande recue de la PI
-		HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
-		HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
+		//HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
+		//HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
 		if (received == 'z'){
 			forward_back(50.0,'-','-',commande);
 			HAL_UART_Transmit(&huart6, (unsigned char *)commande, strlen(commande),HAL_MAX_DELAY);
@@ -107,19 +154,21 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
 		else if (received == 'u'){//angle 0
-			ServoMotor(0,distance_ul,htim2,htim3);
-			HAL_UART_Transmit(&huart1, (unsigned char) distance_ul, strlen((char)distance_ul), HAL_MAX_DELAY);
+			flagServo0 = 1;
 		}
 		else if (received == 'i'){//angle 90
-			ServoMotor(90,distance_ul,htim2,htim3);
-			HAL_UART_Transmit(&huart1, (unsigned char) distance_ul, strlen((char)distance_ul), HAL_MAX_DELAY);
+			flagServo90 = 1;
 		}
 		else if (received == 'o'){//angle 180
-			ServoMotor(180,distance_ul,htim2,htim3);
-			HAL_UART_Transmit(&huart1, (unsigned char) distance_ul, strlen((char)distance_ul), HAL_MAX_DELAY);
+			flagServo180 = 1;
+			//ServoMotor(180);
+			//HAL_UART_Transmit(&huart1, (unsigned char*) buffer, strlen(buffer), HAL_MAX_DELAY);
 		}
 		else if (received == 't'){ // shoot
 			flagTirCanon = 1;
+		}
+		else {
+			HAL_UART_Transmit(&huart1, (unsigned char*)"NACK",5, HAL_MAX_DELAY);
 		}
 
 	}
@@ -128,11 +177,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 			HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
 		}
 		else{
-			HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
+			//HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
 		}
 	}
     HAL_UART_Receive_IT(huart, &received, 1);
 }
+
+
 
 /* USER CODE END 0 */
 
@@ -174,7 +225,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   char message [20] = "UART initialized\n";
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-  HAL_UART_Transmit(&huart1, CLEAR_CONSOLE, strlen(CLEAR_CONSOLE), HAL_MAX_DELAY);
+  //HAL_UART_Transmit(&huart1, CLEAR_CONSOLE, strlen(CLEAR_CONSOLE), HAL_MAX_DELAY);
   HAL_UART_Transmit(&huart1, (unsigned char*)message, strlen(message), HAL_MAX_DELAY);
 
   HAL_UART_Receive_IT(&huart1, &received, 1);
@@ -191,22 +242,37 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//		if (flagTirCanon) {
-//		HAL_GPIO_WritePin(MCC_Canon_GPIO_Port, MCC_Canon_Pin, GPIO_PIN_SET);
-//		HAL_Delay(5000);
-//		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 5); // ball can fall
-//		HAL_Delay(40);
-//		__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 6); // ball CANNOT fall
-//		HAL_Delay(500);
-//		HAL_GPIO_WritePin(MCC_Canon_GPIO_Port, MCC_Canon_Pin, GPIO_PIN_RESET);
-//		flagTirCanon = 0; // peut re-tirer
-//		}
-//		if (HAL_GPIO_ReadPin(LED_Mode_GPIO_Port, LED_Mode_Pin) == GPIO_PIN_SET ) {
-//		HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
-//		__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 15); // Définit le rapport cyclique à 15%
-//		} else {
-//		HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_1);
-//		}
+	  if (flagServo0){
+		ServoMotor(0);
+		HAL_UART_Transmit(&huart1, (unsigned char *)buffer, strlen(buffer), HAL_MAX_DELAY);
+		flagServo0 = 0;
+	  }
+	  else if (flagServo90){
+	  		ServoMotor(90);
+	  		HAL_UART_Transmit(&huart1, (unsigned char *)buffer, strlen(buffer), HAL_MAX_DELAY);
+	  		flagServo90 = 0;
+	  }
+	  else if (flagServo180){
+	  		ServoMotor(180);
+	  		HAL_UART_Transmit(&huart1, (unsigned char *)buffer, strlen(buffer), HAL_MAX_DELAY);
+	  		flagServo180 = 0;
+	  }
+	  else if (flagTirCanon) {
+			HAL_GPIO_WritePin(MCC_Canon_GPIO_Port, MCC_Canon_Pin, GPIO_PIN_SET);
+			HAL_Delay(5000);
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 5); // ball can fall
+			HAL_Delay(40);
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 6); // ball CANNOT fall
+			HAL_Delay(500);
+			HAL_GPIO_WritePin(MCC_Canon_GPIO_Port, MCC_Canon_Pin, GPIO_PIN_RESET);
+			flagTirCanon = 0; // peut re-tirer
+			}
+	  else if (HAL_GPIO_ReadPin(LED_Mode_GPIO_Port, LED_Mode_Pin) == GPIO_PIN_SET ) {
+		HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+		__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 15); // Définit le rapport cyclique à 15%
+		} else {
+		HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_1);
+		}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -632,6 +698,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LED_Mode_Pin */
+  GPIO_InitStruct.Pin = LED_Mode_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(LED_Mode_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : TRIG_Pin MCC_Canon_Pin */
   GPIO_InitStruct.Pin = TRIG_Pin|MCC_Canon_Pin;
