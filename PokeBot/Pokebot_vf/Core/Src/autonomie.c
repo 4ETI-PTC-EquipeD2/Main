@@ -8,7 +8,6 @@
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
-#include <assert.h>
 
 //Fonctions --------------------------------------------------------------------------------------
 void forward_back (float l,char wheel_1,char wheel_2,char * commande){

@@ -78,17 +78,29 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+//Fonctions -------------------------------------------------------------------
+//Fonctions liées à la détection d'obstacles
+
+/*
+ * @brief : Cette fonction permet de mesurer la distance du robot avec l'obstacle
+ * en face du capteur à ultrason.
+ * @Param : none
+ * @Return : none
+ * */
 void Distance_Sensor(){
+	  //Initialisation variables
   	  uint32_t start_time = 0;
   	  uint32_t end_time = 0;
   	  float elapsed_time = 0;
   	  float sound_speed = 343.595*100;
 
-
+  	  //Envoie de l'impulsion pour déclencher la détection d'obstacle
   	  HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_SET);
   	  HAL_Delay(1); //ms
   	  HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_RESET);
 
+  	  //Attente de la réception de l'écho par le télémètre et calcul du temps mis pour le recevoir
   	  while (HAL_GPIO_ReadPin(ECHO_GPIO_Port, ECHO_Pin) == GPIO_PIN_RESET);
 
   	  HAL_TIM_Base_Start(&htim2);
@@ -98,10 +110,19 @@ void Distance_Sensor(){
 
   	  end_time = __HAL_TIM_GET_COUNTER(&htim2);
   	  elapsed_time = ((float) (end_time - start_time)) / ((float) HAL_RCC_GetPCLK1Freq() * 2);
+
+  	  //Cacul de la distance et formatage de la donnée
   	  distance_ul = 35 * sound_speed * elapsed_time;
   	  sprintf(buffer,"%f \n",distance_ul);
     }
 
+/*
+ * @brief : Cette fonction permet d'orienter le capteur à ultra en fonction d'un angle de 0°, 90°, 180°
+ * grâce au servo moteur. Cette fonction appelle par la suite la fonction DistcanceSensor.
+ * en face du capteur à ultrason.
+ * @Param : angle (int) : angle du servomoteur souhaité
+ * @Return : none
+ * */
   void ServoMotor(int angle){
 	  switch (angle){
 	  case 0:
@@ -124,66 +145,66 @@ void Distance_Sensor(){
 	  }
   }
 
+//Fonctions pour la communication UART
+/*
+* @brief : Cette fonction permet de recevoir les différentes commandes de la RaspberryPi. Elle apelle ensuite
+* les différentes fonctions en conséquence. Elle renvoie ensuite la réponse du robot à la Raspberry Pi.
+* @Param : huart (UART_HandleTypeDef) : numéro de l'UART en train de communiquer appelant la fonction par interruption.
+* @Return : none
+* */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-
-	if (huart == &huart1){ // commande recue de la PI
-		//HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
-		//HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
-		if (received == 'z'){
+	if (huart == &huart1){ // commande recue de la Raspberry PI
+		if (received == 'z'){// avancer
 			forward_back(50.0,'-','-',commande);
 			HAL_UART_Transmit(&huart6, (unsigned char *)commande, strlen(commande),HAL_MAX_DELAY);
 		}
-		else if (received == 'a'){
+		else if (received == 'a'){//arrêter
 			HAL_UART_Transmit(&huart6, (unsigned char *)"stop\r",5,HAL_MAX_DELAY);
 		}
-		else if (received == 'q'){
+		else if (received == 'q'){//tourner à gauche
 			turn_forward(-1, commande);
 			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
-		else if (received == 'd'){
+		else if (received == 'd'){//tourner à droite
 			turn_forward(1, commande);
 			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
-		else if (received == 's'){
+		else if (received == 's'){//reculer
 			forward_back(50.0,' ',' ', commande);
 			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
+		//À coupler avec la commande d et q pour avancer sur une case annexe à gauche ou droite
 		else if (received == 'x'){
 			forward_back(42.0,'-','-', commande);
 			HAL_UART_Transmit(&huart6,(unsigned char*)commande,strlen(commande),HAL_MAX_DELAY);
 		}
+		//Comande pour tourner le servomoteur et calculer la distance selon un angle 0°,90°,180°
 		else if (received == 'u'){//angle 0
-			flagServo0 = 1;
+			flagServo0 = 1;//voir boucle while
 		}
 		else if (received == 'i'){//angle 90
 			flagServo90 = 1;
 		}
 		else if (received == 'o'){//angle 180
 			flagServo180 = 1;
-			//ServoMotor(180);
-			//HAL_UART_Transmit(&huart1, (unsigned char*) buffer, strlen(buffer), HAL_MAX_DELAY);
 		}
-		else if (received == 't'){ // shoot
-			flagTirCanon = 1;
+		//
+		else if (received == 't'){ // tirer une bille
+			flagTirCanon = 1;//voir boucle while
 		}
-		else {
+		else {//réponse transmise sur la commande envoyée n'est pas comprise
 			HAL_UART_Transmit(&huart1, (unsigned char*)"NACK",5, HAL_MAX_DELAY);
 		}
 
 	}
-	else if(huart == &huart6){ // commande recue du Serializer
+	else if(huart == &huart6){ // commande reçue du Serializer
 		if (received != '>'){
 			HAL_UART_Transmit(&huart1, &received, 1,HAL_MAX_DELAY);
-		}
-		else{
-			//HAL_UART_Transmit(&huart1, (unsigned char*)'\n', 1,HAL_MAX_DELAY);
 		}
 	}
     HAL_UART_Receive_IT(huart, &received, 1);
 }
-
-
 
 /* USER CODE END 0 */
 
@@ -223,13 +244,15 @@ int main(void)
   MX_TIM4_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  //Initialisation des liaisons UART
   char message [20] = "UART initialized\n";
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-  //HAL_UART_Transmit(&huart1, CLEAR_CONSOLE, strlen(CLEAR_CONSOLE), HAL_MAX_DELAY);
+  HAL_UART_Transmit(&huart1, CLEAR_CONSOLE, strlen(CLEAR_CONSOLE), HAL_MAX_DELAY);
   HAL_UART_Transmit(&huart1, (unsigned char*)message, strlen(message), HAL_MAX_DELAY);
-
   HAL_UART_Receive_IT(&huart1, &received, 1);
   HAL_UART_Receive_IT(&huart6, &received, 1);
+
+  //Initalisation des PWM pour la détection d'obstacle, le tir de canon et la LED.
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 
@@ -242,6 +265,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //Action liée à la commande pour la détection d'obstacle à un certain angle
 	  if (flagServo0){
 		ServoMotor(0);
 		HAL_UART_Transmit(&huart1, (unsigned char *)buffer, strlen(buffer), HAL_MAX_DELAY);
@@ -257,6 +281,8 @@ int main(void)
 	  		HAL_UART_Transmit(&huart1, (unsigned char *)buffer, strlen(buffer), HAL_MAX_DELAY);
 	  		flagServo180 = 0;
 	  }
+	  //
+	  //Action liée à la commande pour le tir de canon
 	  else if (flagTirCanon) {
 			HAL_GPIO_WritePin(MCC_Canon_GPIO_Port, MCC_Canon_Pin, GPIO_PIN_SET);
 			HAL_Delay(5000);
@@ -267,6 +293,8 @@ int main(void)
 			HAL_GPIO_WritePin(MCC_Canon_GPIO_Port, MCC_Canon_Pin, GPIO_PIN_RESET);
 			flagTirCanon = 0; // peut re-tirer
 			}
+	  //
+	  //Action pour allumer la LED
 	  else if (HAL_GPIO_ReadPin(LED_Mode_GPIO_Port, LED_Mode_Pin) == GPIO_PIN_SET ) {
 		HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 		__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 15); // Définit le rapport cyclique à 15%
